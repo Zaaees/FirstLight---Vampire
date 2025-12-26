@@ -125,8 +125,25 @@
             display: block;
         }
 
+        /* Sidebar styles - Desktop */
+        #sidebar-nav {
+            position: fixed;
+            left: 0;
+            top: 80px;
+            height: calc(100vh - 80px);
+            z-index: 25;
+        }
+
+        /* Main content margin for sidebar on desktop */
+        .main-content-wrapper {
+            margin-left: 288px; /* w-72 = 18rem = 288px */
+        }
+
         /* Mobile styles */
         @media (max-width: 768px) {
+            .main-content-wrapper {
+                margin-left: 0;
+            }
             .hamburger-btn {
                 display: flex;
             }
@@ -136,7 +153,7 @@
                 left: -100%;
                 top: 0;
                 height: 100vh;
-                z-index: 40;
+                z-index: 45;
                 transition: left 0.3s ease;
                 padding-top: 80px;
             }
@@ -306,6 +323,11 @@
     <!-- Overlay pour mobile -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMobileMenu()"></div>
 
+    <!-- Sidebar Navigation (déplacée ici pour le z-index mobile) -->
+    <nav id="sidebar-nav" class="w-72 bg-black border-r border-gray-800 overflow-y-auto custom-scrollbar pb-8 select-none">
+        <!-- Content populated by JS -->
+    </nav>
+
     <!-- Header -->
     <header class="bg-black border-b border-gray-800 p-4 flex justify-between items-center z-30">
         <div class="flex items-center gap-4">
@@ -336,12 +358,7 @@
     </header>
 
     <!-- Main Content -->
-    <div class="flex flex-1 overflow-hidden z-20">
-        
-        <!-- Sidebar Navigation -->
-        <nav id="sidebar-nav" class="w-72 bg-black border-r border-gray-800 overflow-y-auto custom-scrollbar pb-8 select-none">
-            <!-- Content populated by JS -->
-        </nav>
+    <div class="flex flex-1 overflow-hidden z-20 main-content-wrapper">
 
         <!-- Document Viewer -->
         <main class="flex-1 bg-gray-900 p-4 md:p-8 overflow-y-auto relative block">
