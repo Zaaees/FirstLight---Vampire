@@ -76,6 +76,121 @@
             margin-bottom: 1rem;
         }
 
+        /* --- STYLES MOBILE --- */
+
+        /* Menu hamburger */
+        .hamburger-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 100;
+        }
+
+        .hamburger-btn span {
+            width: 30px;
+            height: 3px;
+            background-color: #ef4444;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Overlay mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 35;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .hamburger-btn {
+                display: flex;
+            }
+
+            #sidebar-nav {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                height: 100vh;
+                z-index: 40;
+                transition: left 0.3s ease;
+                padding-top: 80px;
+            }
+
+            #sidebar-nav.mobile-open {
+                left: 0;
+            }
+
+            .header-title-text {
+                display: none;
+            }
+
+            .header-title-short {
+                display: block !important;
+            }
+
+            .header-ref {
+                display: none;
+            }
+
+            #document-container {
+                padding: 1.5rem !important;
+                min-height: auto !important;
+            }
+
+            main {
+                padding: 1rem !important;
+            }
+
+            .newspaper-clipping .columns-2 {
+                columns: 1 !important;
+            }
+
+            .clan-grid-2 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .doc-stamp-mobile {
+                font-size: 0.6rem !important;
+                padding: 0.15rem 0.5rem !important;
+            }
+
+            .doc-title-mobile {
+                font-size: 1.1rem !important;
+            }
+
+            table {
+                font-size: 0.65rem !important;
+            }
+
+            table th, table td {
+                padding: 0.25rem !important;
+            }
+        }
 
         .scan-line {
             width: 100%;
@@ -188,21 +303,33 @@
     <div class="crt-overlay absolute inset-0 z-50"></div>
     <div class="scan-line z-40"></div>
 
+    <!-- Overlay pour mobile -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleMobileMenu()"></div>
+
     <!-- Header -->
     <header class="bg-black border-b border-gray-800 p-4 flex justify-between items-center z-30">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center border border-gray-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <!-- Bouton Hamburger (mobile uniquement) -->
+            <button id="hamburger-btn" class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="w-10 h-10 md:w-12 md:h-12 bg-gray-800 rounded-full flex items-center justify-center border border-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-8 md:w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
             </div>
             <div>
-                <h1 class="text-xl font-bold tracking-widest text-gray-100">PROJET FIRSTLIGHT</h1>
-                <p class="text-xs text-red-500 uppercase tracking-wider">Accréditation Niveau 5 Requise</p>
+                <h1 class="text-lg md:text-xl font-bold tracking-widest text-gray-100">
+                    <span class="header-title-text">PROJET FIRSTLIGHT</span>
+                    <span class="header-title-short hidden">FIRSTLIGHT</span>
+                </h1>
+                <p class="text-xs text-red-500 uppercase tracking-wider hidden md:block">Accréditation Niveau 5 Requise</p>
             </div>
         </div>
-        <div class="text-right text-xs text-gray-500">
+        <div class="text-right text-xs text-gray-500 header-ref">
             <p>RÉF: US-GOV-X99</p>
             <p id="date-display">DATE: 202X-10-31</p>
         </div>
@@ -217,25 +344,25 @@
         </nav>
 
         <!-- Document Viewer -->
-        <main class="flex-1 bg-gray-900 p-8 overflow-y-auto relative block">
+        <main class="flex-1 bg-gray-900 p-4 md:p-8 overflow-y-auto relative block">
             
             <!-- The Paper Document -->
-            <div id="document-container" class="mx-auto bg-[#f3f4f6] text-black paper-font w-full max-w-4xl shadow-2xl min-h-[900px] p-12 relative transform transition-all duration-300 flex flex-col">
-                
+            <div id="document-container" class="mx-auto bg-[#f3f4f6] text-black paper-font w-full max-w-4xl shadow-2xl min-h-[900px] p-6 md:p-12 relative transform transition-all duration-300 flex flex-col">
+
                 <!-- Watermark -->
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] z-0">
-                    <svg class="w-96 h-96" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-48 h-48 md:w-96 md:h-96" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
                 </div>
 
                 <!-- Document Header -->
-                <div class="border-b-2 border-black pb-4 mb-6 flex justify-between items-start z-10 relative">
-                    <div class="flex-1 mr-4">
-                        <h2 id="doc-title" class="text-2xl font-bold uppercase tracking-tighter">ACCUEIL DU SYSTÈME</h2>
-                        <p id="doc-subtitle" class="text-sm">Veuillez sélectionner un fichier</p>
+                <div class="border-b-2 border-black pb-4 mb-4 md:mb-6 flex flex-col md:flex-row justify-between items-start z-10 relative gap-2">
+                    <div class="flex-1">
+                        <h2 id="doc-title" class="text-lg md:text-2xl font-bold uppercase tracking-tighter doc-title-mobile">ACCUEIL DU SYSTÈME</h2>
+                        <p id="doc-subtitle" class="text-xs md:text-sm">Veuillez sélectionner un fichier</p>
                     </div>
-                    <div id="doc-stamp" class="stamp border-gray-400 text-gray-400 whitespace-nowrap">EN ATTENTE</div>
+                    <div id="doc-stamp" class="stamp border-gray-400 text-gray-400 whitespace-nowrap doc-stamp-mobile text-xs md:text-base">EN ATTENTE</div>
                 </div>
 
                 <!-- Content Area -->
@@ -244,7 +371,7 @@
                 </div>
 
                 <!-- Footer -->
-                <div class="mt-auto pt-16 border-t border-black flex justify-between text-xs font-bold text-gray-600 z-10 relative">
+                <div class="mt-auto pt-8 md:pt-16 border-t border-black flex flex-col md:flex-row justify-between text-xs font-bold text-gray-600 z-10 relative gap-1 md:gap-0 text-center md:text-left">
                     <span>NE PAS PHOTOCOPIER</span>
                     <span>ORIGINAL 1 DE 1</span>
                     <span>ARCHIVES VATICAN/CIA</span>
@@ -255,8 +382,30 @@
     </div>
 
     <script>
+        // --- MOBILE MENU FUNCTIONS ---
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar-nav');
+            const overlay = document.getElementById('sidebar-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar-nav');
+            const overlay = document.getElementById('sidebar-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+
         // --- DATABASE ---
-        
+
         const database = {
             general: {
                 title: "VUE D'ENSEMBLE",
@@ -812,6 +961,9 @@
             const item = database[catKey].items.find(i => i.id === itemId);
             if (!item) return;
 
+            // Close mobile menu when selecting content
+            closeMobileMenu();
+
             // Highlight active tab
             document.querySelectorAll('.folder-tab').forEach(btn => {
                 btn.classList.remove('active', 'bg-gray-800', 'text-white', 'border-l-4', 'border-red-500', 'pl-3');
@@ -875,7 +1027,7 @@
             if (item.styleType === 'modern') styleClass = 'style-modern';
 
             return `
-                <div class="animate-fade-in-up relative newspaper-clipping ${styleClass} text-black p-8 shadow-md rotate-1 transform max-w-3xl mx-auto font-newspaper">
+                <div class="animate-fade-in-up relative newspaper-clipping ${styleClass} text-black p-4 md:p-8 shadow-md rotate-1 transform max-w-3xl mx-auto font-newspaper">
                      <!-- Texture overlay -->
                      <div class="newspaper-texture"></div>
 
@@ -887,9 +1039,9 @@
                             <span class="text-xs uppercase tracking-widest font-bold font-sans">${item.source}</span>
                             <span class="text-xs font-bold font-sans">${item.date}</span>
                         </div>
-                        <h1 class="text-3xl font-black uppercase mb-6 mt-4 leading-none text-center tracking-tight">${item.headline}</h1>
-                        <div class="columns-2 gap-6 text-justify text-sm leading-snug border-t border-black pt-4">
-                            <p class="first-letter:text-4xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:mt-[-6px]">${item.content}</p>
+                        <h1 class="text-xl md:text-3xl font-black uppercase mb-4 md:mb-6 mt-4 leading-none text-center tracking-tight">${item.headline}</h1>
+                        <div class="columns-1 md:columns-2 gap-6 text-justify text-sm leading-snug border-t border-black pt-4">
+                            <p class="first-letter:text-3xl md:first-letter:text-4xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:mt-[-6px]">${item.content}</p>
                         </div>
                     </div>
                 </div>
@@ -907,18 +1059,18 @@
         function renderClanTemplate(clan) {
             return `
                 <div class="animate-fade-in-up">
-                    <div class="grid grid-cols-2 gap-8 mb-6 border-b border-gray-400 pb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-6 border-b border-gray-400 pb-4 clan-grid-2">
                         <div>
                             <p class="text-xs font-bold text-gray-500">SUJET</p>
-                            <p class="text-xl font-bold font-mono uppercase">${clan.name}</p>
+                            <p class="text-lg md:text-xl font-bold font-mono uppercase">${clan.name}</p>
                         </div>
                         <div>
                             <p class="text-xs font-bold text-gray-500">DESIGNATION S.I.</p>
-                            <p class="text-xl font-bold font-mono text-red-700 tracking-wider">${clan.codeName}</p>
+                            <p class="text-lg md:text-xl font-bold font-mono text-red-700 tracking-wider">${clan.codeName}</p>
                         </div>
-                        <div class="col-span-2">
+                        <div class="col-span-1 md:col-span-2">
                             <p class="text-xs font-bold text-gray-500">NIVEAU DE MENACE</p>
-                            <div class="bg-gray-200 p-2 font-bold border-l-4 border-black">
+                            <div class="bg-gray-200 p-2 font-bold border-l-4 border-black text-sm md:text-base">
                                 ${clan.threatLevel}
                             </div>
                         </div>
